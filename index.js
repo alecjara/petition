@@ -28,6 +28,12 @@ app.get('/petition', (req, res) => {
     });
 });
 
+app.get('/thanks', (req, res) => {
+    res.render('thanks', {
+        layout: 'main'
+    });
+});
+
 app.post('/followers/create', function(req, res) {
     db.createFollowers(
         req.body.city, req.body.country, req.body.population

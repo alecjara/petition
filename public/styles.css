@@ -1,32 +1,53 @@
 * {
-    background-color: red;
+    background-color: #696970;
     box-sizing: border-box;
     font-family: trebuchet, helvetica;
 
 }
 
-.petition {
-    /* position: fixed; */
-    display: flex;
-    margin-left: 400px;
-    margin-top: 50px;
-    align-items: center;
+input {
+    width: 400px;
+    height: 50px;
+    border: 2px solid darkgrey;
+    font-size: 15px;
+}
 
+.petition {
+    margin-top: 50px;
+    float: right;
+    z-index: 10;
+    margin-right: 120px;
 }
 
 h1 {
     align-self: center;
+    margin-left: 30px;
+}
+
+p {
+    font-size: 23px;
+    margin-top: 0;
+
+
 }
 
 img {
-    margin-left: 400px;
-    margin-top: 50px;
+    margin-left: 10px;
+    margin-top: 20px;
     align-items: center;
 }
 
 input {
     background-color: white;
     display: flex;
+}
+
+button {
+    background-color: black;
+    color: white;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 15px;
 }
 
 

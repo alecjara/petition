@@ -10,8 +10,8 @@ var signature = "";
 
 ctx.lineJoin = "round";
 ctx.lineCap = "round";
-ctx.lineWidth = 10;
-ctx.strokeStyle = "#ac0000";
+ctx.lineWidth = 5;
+ctx.strokeStyle = "#000000";
 
 let isDrawing = false;
 let lastX = 0;
