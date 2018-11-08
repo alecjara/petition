@@ -1,12 +1,7 @@
 const canvas = document.querySelector("#draw");
 
 // console.log("I am linked!");
-
 const ctx = canvas.getContext("2d");
-// canvas.width = window.innerWidth;
-// canvas.height = window.innerHeight;
-
-var signature = "";
 
 ctx.lineJoin = "round";
 ctx.lineCap = "round";
@@ -35,10 +30,12 @@ canvas.addEventListener("mousedown", e => {
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener("mouseup", () => {
     isDrawing = false;
-    signature = canvas.toDataURL();
-    console.log(signature);
+    // signature = canvas.toDataURL();
+    // console.log(signature);
 });
 canvas.addEventListener("mouseout", () => {
     isDrawing = false;
-    signature = canvas.toDataURL();
+    // signature = canvas.toDataURL();
 });
+
+$('input[name="signature"]').val(canvas.toDataURL());
