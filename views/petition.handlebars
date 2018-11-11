@@ -1,11 +1,8 @@
 
 <h1>Please, sign our petition to make PIZZA FREE every Friday all over the city!</h1>
-<img src="pizza2.jpg" alt="pizza">
 <div class="petition">
     <form method="POST">
         <h3>please add your information:</h3>
-        <input name="firstname" type="text" placeholder="first name"></input>
-        <input name="lastname" type="text" placeholder="last name"></input>
         <input type="hidden" name="signature"></input>
         <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
         <canvas id="draw" width="400" height="150"></canvas>
@@ -15,6 +12,7 @@
     {{#if error}}
         <h4>Please, try again</h4>
     {{/if}}
+    <img src="pizza2.jpg" alt="pizza">
 </div>
 
 

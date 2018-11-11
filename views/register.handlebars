@@ -1,0 +1,16 @@
+
+<h1>Please, sign up to help us with our petition to make PIZZA FREE every Friday all over the city!</h1>
+<div class="petition">
+    <form method="POST">
+        <h3>please add your information:</h3>
+        <input name="firstname" type="text" placeholder="first name"></input>
+        <input name="lastname" type="text" placeholder="last name"></input>
+        <input name="email" type="text" placeholder="email"></input>
+        <input name="password" type="password" placeholder="password"></input>
+        <!-- <input type="hidden" name="signature"></input> -->
+        <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
+        <button>SIGN UP</button>
+        <h3>If you are already a member, please <a href="login">log in</a></h3>
+    </form>
+    <img src="pizza2.jpg" alt="pizza">
+</div>

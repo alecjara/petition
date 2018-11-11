@@ -4,12 +4,13 @@ const db = require("./db");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
+const { hash, compare } = require('./bcrypt');
 
 app.disable("x-powered-by");
 
 app.use(
     cookieSession({
-        secret: `I'm always angry.`,
+        secret: `I'm always hungry.`,
         maxAge: 1000 * 60 * 60 * 24 * 14
     })
 );
@@ -41,55 +42,145 @@ app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 //do not touch this code
 
-app.get("/petition", (req, res) => {
-    //I want to have access to the first name that the user provided on the about route (in a cookie)
 
-    // console.log("req.session in /petition:", req.session);
-    res.render("petition", {
-        layout: "main"
+app.get('/register', (req, res) => {
+    if (req.session.userIn) {
+        res.redirect('/petition');
+    } else {
+        res.render("register", {
+            layout: "main"
+        });
+    }
+});
+
+app.post('/register', (req, res) => {
+    hash(req.body.pass).then(hash => {
+        console.log(hash);
+        return db.createUser(req.body.firstname, req.body.lastname, req.body.email, hash
+        ).then(results => {
+        // console.log(results.rows[0].name);
+            req.session.userIn = results.rows[0].id;
+            //console.log(req.session.user_id);
+            req.session.firstname = results.rows[0].firstname;
+            req.session.lastname = results.rows[0].lastname;
+            req.session.email = results.rows[0].email;
+            //req.session.userIn = "true";
+            res.redirect("/petition");
+        }).catch(function(error) {
+            res.render("register", {
+                layout: "main",
+                error: error
+            });
+        });
     });
 });
 
-app.post("/petition", function(req, res) {
-    db.createFollowers(
-        req.body.firstname,
-        req.body.lastname,
-        req.body.signature
-    ).then(function(results) {
-        console.log(results);
-        req.session.signed = true;
-        let id = results.rows[0].id;
-        // console.log(id);
-        console.log(db.signers(id));
+app.get('/login', (req, res) => {
+    if (req.session.userIn) {
+        res.redirect('/petition');
+    } else {
+        res.render("login", {
+            layout: "main"
+        });
+    }
+});
 
-        res.redirect("/thanks");
-    }).catch(function(error) {
+app.post('/login', (req, res) => {
+    //const user_id = req.session.userIn;
+    db.getUser(req.body.email).then(results => {
+        req.session.userIn = results.rows[0].userIn;
+        req.session.signed = results.rows[0].signed;
+        return compare(req.body.pass, results.rows[0].pass
+        ).then(matches => {
+        //console.log(matches);
+            if (matches) {
+                res.redirect('/petition');
+                //return db.getSignature(results.rows[0].user_id);
+            } else {
+                res.render("login", {
+                    layout: "main",
+                    error: "error, try again"
+                });
+            }
+        }).catch(function(error) {
+            console.log(error);
+            res.render("login", {
+                layout: "main",
+                error: error
+            });
+        });
+    });
+});
+
+app.get("/petition", (req, res) => {
+    if (req.session.signed) {
+        res.redirect('/thanks');
+        return;
+    } else {
         res.render("petition", {
+            layout: "main"
+        });
+    }
+});
+
+app.post("/petition", function(req, res) {
+    // req.session.user_id = results.rows[0].id
+    db.saveSigners(req.body.firstname, req.body.lastname, req.body.signature, req.body.user_id
+    ).then(results => {
+        // console.log("petition results:", results);
+        req.session.signed = results.rows[0].id;
+        req.session.signed = 'true';
+        console.log("checking signed:", req.session.signed);
+        // return db.getSignature(user_id);
+        res.render("thanks", {
+            layout: "main",
+            // signature: results.rows[0].signature
+            // res.redirect('/thanks')
+        });
+    }).catch(function(error) {
+        res.render('petition', {
             layout: "main",
             error: error
-
         });
-        req.session = null;
     });
 });
 
 app.get("/thanks", (req, res) => {
-    db.signers().then(function(signature) {
+    if (!req.session.signed) {
+        res.redirect('/petition');
+        return;
+    }
+    const id = req.session.signed;
+    db.getSignature(id).then(function(signature) {
         res.render("thanks", {
             layout: "main",
-            signature: signature
+            signature: signature,
+            image: signature.rows[0].signature
         });
+    }).catch(function(error) {
+        console.log(error);
     });
-    // res.session.id
-    // console.log("req.session in /thanks:", req.session);
-});
+}
+);
 
 app.get("/signers", (req, res) => {
-    // console.log("req.session in /signers:", req.session);
-    res.render("signers", {
-        layout: "main"
-    });
+    if (!req.session.signed) {
+        res.redirect('/petition');
+    } else {
+        db.getSigners().then(function(results) {
+            console.log(results);
+            res.render("signers", {
+                layout: "main"
+            });
+        }).catch(function(error) {
+            console.log("error:", error);
+        });
+    }
 });
-//we need function that read the cookie and redirect them to
+
+app.get('/logout', function(req, res) {
+    req.session = null;
+    res.redirect('/register');
+});
 
 app.listen(8080, () => console.log("I'm listening!"));
