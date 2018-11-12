@@ -30,7 +30,7 @@ exports.getSignature= function(id) {
 exports.createUser = function(firstname, lastname, email, pass) {
     return db.query(`INSERT INTO users (firstname, lastname, email, pass)
     VALUES ($1, $2, $3, $4)
-    RETURNING id`,
+    RETURNING id, firstname, lastname`,
     [firstname || null, lastname || null, email || null, pass|| null]);
 };
 

@@ -1,7 +1,7 @@
 const canvas = document.querySelector("#draw");
-
+//const hidden = document.querySelector('#hidsig');
 // console.log("I am linked!");
-const ctx = canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 
 ctx.lineJoin = "round";
 ctx.lineCap = "round";
@@ -14,7 +14,7 @@ let lastY = 0;
 
 function draw(e) {
     if (!isDrawing) return;
-    console.log(e);
+    // console.log(e);
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(e.offsetX, e.offsetY);
@@ -30,12 +30,19 @@ canvas.addEventListener("mousedown", e => {
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener("mouseup", () => {
     isDrawing = false;
-    // signature = canvas.toDataURL();
-    // console.log(signature);
+    console.log("COMING FROM CTX: ", canvas.toDataURL());
+    $('input[name="signature"]').val(canvas.toDataURL());
+    console.log("COMING FROM singature", $('input[name="signature"]').val());
+    //signature = canvas.toDataURL();
+    //console.log(signature);
 });
 canvas.addEventListener("mouseout", () => {
     isDrawing = false;
     // signature = canvas.toDataURL();
 });
 
-$('input[name="signature"]').val(canvas.toDataURL());
+// hidden.value = canvas.toDataURL();
+// hidden.addEventListener('change', function(){
+//     console.log(hidden.value);
+//     console.log(canvas.value);
+// });

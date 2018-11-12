@@ -13,4 +13,6 @@ exports.hash = function(password) {
         return hash(password, salt);
     });
 };
+
+
 exports.compare = compare;

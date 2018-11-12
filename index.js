@@ -44,7 +44,8 @@ app.set("view engine", "handlebars");
 
 
 app.get('/register', (req, res) => {
-    if (req.session.userIn) {
+    if (req.session.user_id) {
+        //console.log("log user_id:", req.session.user_id);
         res.redirect('/petition');
     } else {
         res.render("register", {
@@ -54,19 +55,20 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-    hash(req.body.pass).then(hash => {
-        console.log(hash);
+    hash(req.body.password).then(hash => {
+        //console.log(hash);
         return db.createUser(req.body.firstname, req.body.lastname, req.body.email, hash
         ).then(results => {
-        // console.log(results.rows[0].name);
-            req.session.userIn = results.rows[0].id;
+            //console.log("results:", results);
+            req.session.user_id = results.rows[0].id;
             //console.log(req.session.user_id);
             req.session.firstname = results.rows[0].firstname;
             req.session.lastname = results.rows[0].lastname;
             req.session.email = results.rows[0].email;
-            //req.session.userIn = "true";
+            //req.session.user_id = "true";
             res.redirect("/petition");
         }).catch(function(error) {
+            console.log("error:", error);
             res.render("register", {
                 layout: "main",
                 error: error
@@ -76,8 +78,9 @@ app.post('/register', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    if (req.session.userIn) {
+    if (req.session.user_id) {
         res.redirect('/petition');
+        return;
     } else {
         res.render("login", {
             layout: "main"
@@ -86,11 +89,12 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    //const user_id = req.session.userIn;
+    //const user_id = req.session.user_id;
     db.getUser(req.body.email).then(results => {
-        req.session.userIn = results.rows[0].userIn;
+    //    console.log(results);
+        req.session.user_id = results.rows[0].user_id;
         req.session.signed = results.rows[0].signed;
-        return compare(req.body.pass, results.rows[0].pass
+        return compare(req.body.password, results.rows[0].password
         ).then(matches => {
         //console.log(matches);
             if (matches) {
@@ -114,6 +118,7 @@ app.post('/login', (req, res) => {
 
 app.get("/petition", (req, res) => {
     if (req.session.signed) {
+        //console.log("signed:", req.session.signed);
         res.redirect('/thanks');
         return;
     } else {
@@ -125,19 +130,16 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", function(req, res) {
     // req.session.user_id = results.rows[0].id
-    db.saveSigners(req.body.firstname, req.body.lastname, req.body.signature, req.body.user_id
+    db.saveSigners(req.session.firstname, req.session.lastname, req.body.signature, req.session.user_id
     ).then(results => {
-        // console.log("petition results:", results);
+        //console.log("petition results:", results);
         req.session.signed = results.rows[0].id;
-        req.session.signed = 'true';
-        console.log("checking signed:", req.session.signed);
+        //console.log("checking signed:", req.session.signed);
         // return db.getSignature(user_id);
-        res.render("thanks", {
-            layout: "main",
-            // signature: results.rows[0].signature
-            // res.redirect('/thanks')
-        });
+        res.redirect('/thanks');
+
     }).catch(function(error) {
+        console.log("ERRORRRRR", error);
         res.render('petition', {
             layout: "main",
             error: error
@@ -150,12 +152,12 @@ app.get("/thanks", (req, res) => {
         res.redirect('/petition');
         return;
     }
-    const id = req.session.signed;
-    db.getSignature(id).then(function(signature) {
+    db.getSignature(req.session.signed).then(function(results) {
+        console.log("results from thanks route: ", results);
         res.render("thanks", {
             layout: "main",
-            signature: signature,
-            image: signature.rows[0].signature
+            // signature: signature,
+            image: results.rows[0].signature
         });
     }).catch(function(error) {
         console.log(error);
@@ -170,7 +172,8 @@ app.get("/signers", (req, res) => {
         db.getSigners().then(function(results) {
             console.log(results);
             res.render("signers", {
-                layout: "main"
+                layout: "main",
+                results: results.rows
             });
         }).catch(function(error) {
             console.log("error:", error);
