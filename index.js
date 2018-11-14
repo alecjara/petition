@@ -10,7 +10,7 @@ app.disable("x-powered-by");
 
 app.use(
     cookieSession({
-        secret: `I'm always hungry.`,
+        secret: 'I am always hungry',
         maxAge: 1000 * 60 * 60 * 24 * 14
     })
 );
@@ -274,5 +274,5 @@ app.get('/logout', function(req, res) {
 
 //CHANGE THIS FOR HEROKU:
 app.listen(process.env.PORT || 8080, function() {
-    console.log("I'm listening on heroku");
+    console.log("I'm listening on heroku or 8080");
 });
