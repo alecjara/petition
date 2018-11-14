@@ -1,7 +1,11 @@
 <h1>Please, log in!</h1>
-<form>
-<input name="email" type="text" placeholder="email"></input>
+<form method="POST">
+<input name="email" type="email" placeholder="email"></input>
 <input name="password" type="password" placeholder="password"></input>
+<input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
 <button>LOG IN</button>
 </form>
-<img src="pizza2.jpg" alt="pizza">
+{{#if error}}
+    <h4>Please, try again</h4>
+{{/if}}
+<img src="/pizza2.jpg" alt="pizza">

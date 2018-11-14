@@ -46,7 +46,7 @@ app.set("view engine", "handlebars");
 app.get('/register', (req, res) => {
     if (req.session.user_id) {
         //console.log("log user_id:", req.session.user_id);
-        res.redirect('/petition');
+        res.redirect('/profile');
     } else {
         res.render("register", {
             layout: "main"
@@ -66,7 +66,7 @@ app.post('/register', (req, res) => {
             req.session.lastname = results.rows[0].lastname;
             req.session.email = results.rows[0].email;
             //req.session.user_id = "true";
-            res.redirect("/petition");
+            res.redirect("/profile");
         }).catch(function(error) {
             console.log("error:", error);
             res.render("register", {
@@ -77,46 +77,70 @@ app.post('/register', (req, res) => {
     });
 });
 
-app.get('/login', (req, res) => {
-    if (req.session.user_id) {
-        res.redirect('/petition');
-        return;
-    } else {
-        res.render("login", {
-            layout: "main"
-        });
-    }
+app.get('/profile', (req, res) => {
+    res.render("profile", {
+        layout: "main",
+        error: "error"
+    });
 });
 
-app.post('/login', (req, res) => {
-    //const user_id = req.session.user_id;
-    db.getUser(req.body.email).then(results => {
-    //    console.log(results);
-        req.session.user_id = results.rows[0].user_id;
-        req.session.signed = results.rows[0].signed;
-        return compare(req.body.password, results.rows[0].password
-        ).then(matches => {
-        //console.log(matches);
-            if (matches) {
-                res.redirect('/petition');
-                //return db.getSignature(results.rows[0].user_id);
-            } else {
-                res.render("login", {
-                    layout: "main",
-                    error: "error, try again"
-                });
-            }
-        }).catch(function(error) {
-            console.log(error);
-            res.render("login", {
-                layout: "main",
-                error: error
-            });
+
+app.post('/profile', (req, res) => {
+    return db.createUserProfiles(req.body.age, req.body.city, req.body.url, req.session.user_id
+    ).then(() => {
+        res.redirect('/petition');
+    }).catch(function(error) {
+        console.log("error:", error);
+        res.render("petition", {
+            layout: "main",
+            error: error
         });
     });
 });
 
+app.get('/login', (req, res) => {
+    if (!req.session.user_id) {
+        res.render("login", {
+            layout: "main"
+        });
+    } else {
+        res.redirect('/petition');
+    }
+});
+
+app.post("/login", (req, res) => {
+    db.getUser(req.body.email)
+        .then(result => {
+            compare(req.body.password, result.rows[0].pass)
+                .then(doesMatch => {
+                    if (doesMatch === true) {
+                        req.session.user_id = result.rows[0].user_id;
+                        req.session.signed = result.rows[0].signed;
+                        //console.log(result.rows[0].sig);
+                    } else {
+                        throw new Error();
+                    }
+                })
+                .then(() => {
+                    //console.log("THESE ARE THE RESULTS: ", result);
+                    if (req.session.signed == null) {
+                        res.redirect("/petition");
+                    } else {
+                        res.redirect("/thanks");
+                    }
+                });
+        })
+        .catch(err => {
+            console.log("error in login: ", err);
+            res.render("logIn", {
+                layout: "main",
+                error: err
+            });
+        });
+});
+
 app.get("/petition", (req, res) => {
+    //console.log(req.session.signed);
     if (req.session.signed) {
         //console.log("signed:", req.session.signed);
         res.redirect('/thanks');
@@ -130,10 +154,12 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", function(req, res) {
     // req.session.user_id = results.rows[0].id
-    db.saveSigners(req.session.firstname, req.session.lastname, req.body.signature, req.session.user_id
+    db.saveSigners(req.body.signature, req.session.user_id
     ).then(results => {
         //console.log("petition results:", results);
+        //req.session.user_id = results.rows[0].id;
         req.session.signed = results.rows[0].id;
+
         //console.log("checking signed:", req.session.signed);
         // return db.getSignature(user_id);
         res.redirect('/thanks');
@@ -149,31 +175,28 @@ app.post("/petition", function(req, res) {
 
 app.get("/thanks", (req, res) => {
     if (!req.session.signed) {
-        res.redirect('/petition');
-        return;
-    }
-    db.getSignature(req.session.signed).then(function(results) {
-        console.log("results from thanks route: ", results);
-        res.render("thanks", {
-            layout: "main",
-            // signature: signature,
-            image: results.rows[0].signature
+        res.redirect("/petition");
+    } else {
+        db.getSignature(req.session.signed).then(function(results) {
+            res.render("thanks", {
+                layout: "main",
+                link: "yes",
+                image: results.rows[0].signature
+            });
         });
-    }).catch(function(error) {
-        console.log(error);
-    });
-}
-);
+    }
+});
+
 
 app.get("/signers", (req, res) => {
     if (!req.session.signed) {
         res.redirect('/petition');
     } else {
-        db.getSigners().then(function(results) {
-            console.log(results);
+        db.getUserProfiles().then(function(results) {
+            //console.log(results);
             res.render("signers", {
                 layout: "main",
-                results: results.rows
+                signers: results.rows
             });
         }).catch(function(error) {
             console.log("error:", error);
@@ -181,9 +204,75 @@ app.get("/signers", (req, res) => {
     }
 });
 
+
+app.get("/signers/:city", (req, res) => {
+    db.getSignersByCity(req.params.city).then(results => {
+    //    console.log("getSignersByCity: ", results);
+        res.render("signers", {
+            layout: "main",
+            signers: results.rows
+        });
+    }).catch(function(error) {
+        console.log("error:", error);
+    });
+});
+
+app.get("/profile/edit", (req, res) => {
+    db.editProfile(req.session.user_id).then(results => {
+        res.render("editprofile", {
+            layout: "main",
+            // results: results.rows[0],
+            profile: results.rows[0]
+        });
+    }).catch(function(error) {
+        console.log("error editing profile:", error);
+    });
+});
+
+app.post("/profile/edit", (req, res) => {
+    let promises;
+    if (req.body.password != "") {
+        promises = [
+            hash(req.body.password).then(hash => db.updateUser(req.session.user_id, req.body.firstname,
+                req.body.lastname, req.body.email, hash)),
+            db.updateProfile(req.body.age, req.body.city, req.body.url, req.session.user_id)
+        ];
+    } else {
+        promises = [
+            db.updateUser(req.session.user_id, req.body.firstname,
+                req.body.lastname, req.body.email),
+            db.updateProfile(req.body.age, req.body.city, req.body.url, req.session.user_id)
+        ];
+    }
+
+    Promise.all(promises)
+        .then(() => {
+            res.redirect('/petition');
+        }).catch(function(error) {
+            console.log("error:", error);
+        });
+});
+
+
+app.post("/signature/delete", (req, res) => {
+    db.deleteSignatures(req.session.signed).
+        then(function() {
+            delete req.session.signed;
+            res.redirect('/petition');
+        }).catch(function(error) {
+            console.log("error deleting signature:", error);
+        });
+});
+
+
 app.get('/logout', function(req, res) {
     req.session = null;
     res.redirect('/register');
 });
 
-app.listen(8080, () => console.log("I'm listening!"));
+// app.listen(8080, () => console.log("I'm listening!"));
+
+//CHANGE THIS FOR HEROKU:
+app.listen(process.env.PORT || 8080, function() {
+    console.log("I'm listening on heroku");
+});

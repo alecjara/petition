@@ -1,6 +1,16 @@
 <h1>List of signers</h1>
-{{#each results}}
-    <h5>{{firstname}} {{lastname}}</h5>
+
+{{#each signers}}
+<!-- for part4 do something similar to this: -->
+    {{#if url}}
+    <p><a href={{url}}>{{firstname}} {{lastname}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    {{else}}
+    <p>{{firstname}} {{lastname}} {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    {{/if}}
 {{/each}}
 
-<img src="pizza2.jpg" alt="pizza">
+{{#if link}}
+    <a href="/signers">Click to see the list of signers.</a>
+{{/if}}
+
+<img src="/pizza2.jpg" alt="pizza">
