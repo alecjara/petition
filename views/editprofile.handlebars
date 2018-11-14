@@ -1,4 +1,5 @@
-<h1>You may edit your profile here!</h1>
+<div class="petition">
+    <h1>You may edit your profile here!</h1>
 <form method="POST">
     <input name="firstname" type="text" placeholder="first name" value={{#profile}}{{firstname}}{{/profile}}></input>
     <input name="lastname" type="text" placeholder="last name" value={{#profile}}{{lastname}}{{/profile}}></input>
@@ -10,11 +11,11 @@
     <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
 <button>UPDATE</button>
 </form>
-
+</div>
 
 <!-- <form method="post" action="/profile/delete">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button>Click here to delete your profile</button>
 </form> -->
 
-<img src="/pizza2.jpg" alt="pizza">
+<!-- <img src="/pizza2.jpg" alt="pizza"> -->

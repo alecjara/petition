@@ -43,6 +43,10 @@ app.set("view engine", "handlebars");
 //do not touch this code
 
 
+app.get("/", (req, res) => {
+    res.redirect("/register");
+});
+
 app.get('/register', (req, res) => {
     if (req.session.user_id) {
         //console.log("log user_id:", req.session.user_id);
