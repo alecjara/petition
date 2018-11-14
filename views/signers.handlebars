@@ -5,9 +5,9 @@
 {{#each signers}}
 <!-- for part4 do something similar to this: -->
     {{#if url}}
-    <p><a href={{url}}>{{firstname}} {{lastname}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    <h3><a href={{url}}>{{firstname}} {{lastname}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></h3>
     {{else}}
-    <p>{{firstname}} {{lastname}} {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    <h3>{{firstname}} {{lastname}} {{age}} <a href="/signers/{{city}}">{{city}}</a></h3>
     {{/if}}
 {{/each}}
 
@@ -16,4 +16,4 @@
 {{/if}}
 </div>
 
-<!-- <img src="/pizza2.jpg" alt="pizza"> -->
+<img id="pizza3" src="/pizza3.jpg" alt="pizza">
