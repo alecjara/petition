@@ -27,12 +27,33 @@ input {
     margin-left: 30px;
 }
 
+#signers {
+    display: inline-block;
+    position: relative;
+    width: 500px;
+    height: 100%;
+    color: lightgrey;
+}
+
+a:link, a:visited, a:hover, a:active {
+   color: lightgrey;
+   background-color: transparent;
+   text-decoration: underline;
+
+}
+
 h1 {
-    /* align-self: center;
-    margin-left: 30px; */
+    /* align: center; */
+    /* margin-left: 30px;  */
     display: flex;
     text-align: center;
     font-weight: 200;
+    color: white;
+}
+
+h3 {
+    color: white;
+
 }
 
 p {
@@ -55,27 +76,36 @@ h4 {
 }
 
 #pizza3 {
-    display: flex;
-    justify-content: flex-end;
-    z-index: 9999;
-    margin-left: 50px;
-    margin-top: 20px;
+    object-fit: none;
+    /* margin-top: 50px; */
+    position: fixed;
+    margin-left: 500px;
+
 }
 
 #logout {
     font-size: 25px;
-    color: black;
+    color: white;
     font-weight: bold;
+    float: right;
+    margin-right: 16px;
 
 }
 
-button {
-    background-color: black;
+#login {
+    font-size: 25px;
     color: white;
+    font-weight: bold;
+}
+
+button {
+    background-color: white;
+    color: black;
     padding: 8px;
     font-size: 15px;
     border-radius: 15px;
     cursor: pointer;
+    border: 2px black solid;
 }
 
 .sig {
@@ -87,24 +117,19 @@ button {
     /* border-bottom:1px solid #444; */
     cursor: pointer;
     text-decoration: underline;
+    color: lightgrey;
 }
 
 
 #draw {
     border: 2px dashed black;
-    background-color: white;
+    background-color: #696970;
+    color: white;
 
 }
 
 
-/* #pizza {
-    object-fit: cover; */
-    /* opacity: 0.7; */
-    /* width: 80%;
-    height: 80%; */
-    /* margin-left: 10px;
-    margin-top: 20px;
-    align-items: center; */
-    /* z-index: -1; */
-    /* position: fixed; */
-/* } */
+#sigimg {
+    border: 2px dashed black;
+
+}

@@ -6,7 +6,7 @@ let ctx = canvas.getContext("2d");
 ctx.lineJoin = "round";
 ctx.lineCap = "round";
 ctx.lineWidth = 5;
-ctx.strokeStyle = "#000000";
+ctx.strokeStyle = "white";
 
 let isDrawing = false;
 let lastX = 0;
