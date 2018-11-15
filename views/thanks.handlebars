@@ -12,6 +12,10 @@
     <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
     <button class="sig"><h2>Click here to delete your signature</h2></button>
 </form>
+<form method="post" action="/profile/delete">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button class="sig"><h2>Click here to delete your profile</h2></button>
+</form>
 {{> pizza}}
 </div>
 <!-- <img src="/pizza2.jpg" alt="pizza"> -->

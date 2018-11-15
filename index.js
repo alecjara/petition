@@ -259,12 +259,31 @@ app.post("/profile/edit", (req, res) => {
 
 
 app.post("/signature/delete", (req, res) => {
-    db.deleteSignatures(req.session.signed).
+    //console.log(req.session.signed);
+    db.deleteSignatures(req.session.user_id).
         then(function() {
             delete req.session.signed;
             res.redirect('/petition');
         }).catch(function(error) {
             console.log("error deleting signature:", error);
+        });
+});
+
+app.post("/profile/delete", (req, res) => {
+    Promise.all([
+        db.deleteSignatures(req.session.user_id),
+        db.deleteProfile(req.session.user_id)
+    ])
+        .then(function() {
+            delete req.session.signed;
+            return db.deleteUser(req.session.user_id);
+        })
+        .then(function() {
+            delete req.session.user_id;
+            res.redirect("/register");
+        })
+        .catch(err => {
+            console.log("Error ", err);
         });
 });
 
