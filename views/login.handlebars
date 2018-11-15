@@ -4,11 +4,13 @@
 <input name="email" type="email" placeholder="email"></input>
 <input name="password" type="password" placeholder="password"></input>
 <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
+<br>
 <button>LOG IN</button>
 </form>
 {{#if error}}
     <h4>Please, try again</h4>
 {{/if}}
+<!-- <a id="logout" href="logout">logout</a> -->
 {{> pizza}}
 </div>
 <!-- <img src="/pizza2.jpg" alt="pizza"> -->

@@ -269,6 +269,8 @@ app.post("/signature/delete", (req, res) => {
 });
 
 
+
+
 app.get('/logout', function(req, res) {
     req.session = null;
     res.redirect('/register');

@@ -1,4 +1,5 @@
 
+
 <div class="petition">
     <h1>Please, sign up to help us with our petition <br>
         to make PIZZA FREE every Friday all over the city!</h1>
@@ -10,8 +11,9 @@
         <input name="password" type="password" placeholder="password"></input>
         <!-- <input type="hidden" name="signature"></input> -->
         <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>
+        <br>
         <button>SIGN UP</button>
-        <h3>If you are already a member, please <a href="login">log in</a></h3>
+        <h3>If you are already a member, please <a id="logout" href="login">log in</a></h3>
     </form>
     <!-- <img src="/pizza2.jpg" alt="pizza"> -->
     {{> pizza}}

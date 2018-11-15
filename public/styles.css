@@ -10,11 +10,15 @@ body {
 }
 
 input {
-    width: 400px;
+    width: 495px;
     height: 50px;
     border: 2px solid darkgrey;
     font-size: 15px;
+    background-color: white;
+    /* display: flex; */
+    display: inline-block;
 }
+
 
 .petition {
     margin-top: 10px;
@@ -58,10 +62,11 @@ h4 {
     margin-top: 20px;
 }
 
+#logout {
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
 
-input {
-    background-color: white;
-    display: flex;
 }
 
 button {
