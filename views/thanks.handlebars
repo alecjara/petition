@@ -3,10 +3,13 @@
     <h1>Thank you very much for signing our petition to make PIZZA FREE every Friday all over the city!</h1>
 <!-- show signature here -->
 <img src={{image}} alt="signature" id="sigimg">
+
+<div id="h2s">
 {{#if link}}
-    <a href="/signers"><h2>Click here to see the list of signers.</h2></a>
-    <a href="/profile/edit"><h2>Click here to edit your profile.</h2></a>
+    <a href="/signers"><h2>Click here to see the list of signers</h2></a>
+    <a href="/profile/edit"><h2>Click here to edit your profile</h2></a>
 {{/if}}
+</div>
 
 <form method="POST" action="/signature/delete">
     <input type="hidden" name="_csrf" value="{{csrfToken}}"></input>

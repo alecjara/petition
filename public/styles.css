@@ -51,6 +51,10 @@ h1 {
     color: white;
 }
 
+#h2s {
+    width: 400px;
+}
+
 h3 {
     color: white;
 
@@ -66,6 +70,13 @@ h4 {
     color: red;
     font-size: 30px;
 
+}
+
+#reg {
+    width: 400px;
+    color: white;
+    font-weight: bold;
+    margin-left: 350px;
 }
 
 #pizza {
@@ -96,7 +107,7 @@ h4 {
     float: right;
     color: white;
     border: 3px white dashed;
-    padding: 10px; 
+    padding: 10px;
 
 }
 
